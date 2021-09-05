@@ -4,12 +4,19 @@ import re
 import sys
 import math
 import xmltodict
+from PIL import ImageFont
 
 
 def sec2hms(sec):  # 转换时间的函数
     hms = str(int(sec//3600)).zfill(2)+':' + \
         str(int((sec % 3600)//60)).zfill(2)+':'+str(round(sec % 60, 2))
     return hms
+
+
+def getTextWidth(text, font_family, font_size):  # 获取字幕长度
+    font = ImageFont.truetype('./SourceHanSansJP-Medium.otf', font_size, 0)
+    width, _ = font.getsize(text)
+    return width
 
 
 def xml2ass(xml_name):
@@ -28,7 +35,7 @@ def xml2ass(xml_name):
         text = chats[i]['#text']
         user_id = chats[i]['@user_id']
         premium = chats[i]['@premium'] if '@premium' in chats[i] else ''
-        if premium == '3':
+        if premium == '3' or premium == '7':
             officeId.append(user_id)
         if i == len(chats) - 1 and len(officeId) == 0:
             officeId.append(input('找不到运营id，请手动输入：'))
@@ -37,6 +44,7 @@ def xml2ass(xml_name):
     AASize = 18  # AA弹幕字体大小
     AAHighAdjust = 0  # AA弹幕行间间隔
     OfficeSize = 40  # 运营弹幕字体大小
+    OfficeWarpSize = 32  # 运营弹幕2行字体大小，不懂怎么画的，凑合
     OfficeBgHeight = 72  # 运营弹幕背景遮盖高度
     fontName = 'Source Han Sans JP'
     danmakuSize = 68
@@ -245,16 +253,32 @@ def xml2ass(xml_name):
                 vote_check = False
 
             if re.search('/vote', text) == None:  # 处理非投票运营弹幕
+                centerHorizon = videoWidth/2
+                centerVertical = math.floor(OfficeBgHeight/2)
                 eventBg = 'Dialogue: 4,'+startTime+','+endTime+',Office,,0,0,0,,{\\an5\\p1\\pos('+str(
-                    videoWidth/2)+','+str(math.floor(OfficeBgHeight/2))+')\\bord0\\1c&H000000&\\1a&H78&}'+officeBg+'\n'
+                    centerHorizon)+','+str(centerVertical)+')\\bord0\\1c&H000000&\\1a&H78&}'+officeBg+'\n'
+                if premium == '7' and '@name' in chat:
+                    centerVertical = math.floor(OfficeBgHeight*3/4)
+                    name = '〘' + chat['@name'] + '〙'
+                    offset = math.floor((getTextWidth(text, fontName, OfficeWarpSize) - getTextWidth(name, fontName, OfficeWarpSize))/2)
+                    if offset < 0:
+                        nameHorizon = centerHorizon
+                        centerHorizon += offset
+                    else: 
+                        nameHorizon = centerHorizon - offset
                 if 'a href' in text:
                     link = re.compile('<a href=(.*?)><u>')
                     text = link.sub('', text).replace('</u></a>', '')
-                    eventDm = 'Dialogue: 5,'+startTime+','+endTime+',Office,,0,0,0,,{\\an5\\pos('+str(videoWidth/2)+','+str(
-                        math.floor(OfficeBgHeight/2))+')\\bord0\\1c&HFF8000&\\u1\\fsp0}'+text.replace('/perm ', '')+'\n'
+                    eventDm = 'Dialogue: 5,'+startTime+','+endTime+',Office,,0,0,0,,{\\an5\\pos('+str(centerHorizon)+','+str(
+                        centerVertical)+')\\bord0\\1c&HFF8000&\\u1\\fsp0}'+text.replace('/perm ', '')+'\n'
                 else:
-                    eventDm = 'Dialogue: 5,'+startTime+','+endTime+',Office,,0,0,0,,{\\an5\\pos('+str(videoWidth/2)+','+str(
-                        math.floor(OfficeBgHeight/2))+')\\bord0'+assColor+'\\fsp0}'+text.replace('/perm ', '')+'\n'
+                    eventDm = 'Dialogue: 5,'+startTime+','+endTime+',Office,,0,0,0,,{\\an5\\pos('+str(centerHorizon)+','+str(
+                        centerVertical)+')\\bord0'+assColor+'\\fsp0}'+text.replace('/perm ', '')+'\n'
+                if premium == '7' and '@name' in chat:
+                    centerVertical = math.floor(OfficeBgHeight*1/4)
+                
+                    eventDm = 'Dialogue: 5,'+startTime+','+endTime+',Office,,0,0,0,,{\\an5\\pos('+str(nameHorizon)+','+str(
+                        centerVertical)+')\\bord0'+assColor+'\\fsp0}'+name+'\n' + eventDm
                 if len(text) > 50:
                     eventDm = eventDm.replace('fsp0', 'fsp0\\fs30')
                 eventO += eventBg+eventDm.replace('　', '  ')
