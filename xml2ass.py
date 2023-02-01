@@ -32,6 +32,8 @@ def xml2ass(xml_name):
     # 获取运营弹幕ID和需要过滤弹幕的ID
     officeId = []
     for i in range(len(chats)):
+        if '#text' not in chats[i]:
+            continue
         text = chats[i]['#text']
         user_id = chats[i]['@user_id']
         premium = chats[i]['@premium'] if '@premium' in chats[i] else ''
@@ -46,7 +48,8 @@ def xml2ass(xml_name):
     OfficeSize = 40  # 运营弹幕字体大小
     OfficeWarpSize = 32  # 运营弹幕2行字体大小，不懂怎么画的，凑合
     OfficeBgHeight = 72  # 运营弹幕背景遮盖高度
-    fontName = 'Source Han Sans JP'
+    # fontName = 'Source Han Sans JP'
+    fontName = 'MS PGothic'
     danmakuSize = 68
     danmakuLineHeight = 64  # 弹幕行高度
     danmakuFontSpace = 2  # 弹幕行间间隔
@@ -65,7 +68,7 @@ def xml2ass(xml_name):
                 'green2': '00cc66', 'marineblue': '33ffcc', 'blue2': '33ffcc', 'nobleviolet': '6633cc', 'purple2': '6633cc'}  # 颜色列表
     videoWidth = 1280  # 视频宽度，默认3M码率生放，不用改
     videoHeight = 720  # 视频高度，默认3M码率生放，不用改
-    fontSize = 64  # 普通弹幕字体大小
+    fontSize = 46  # 普通弹幕字体大小
 
     # 字幕行处理
     eventA = 'Comment: 0,0:00:00.00,0:00:00.00,AA,,0,0,0,,AA弹幕\n'  # AA弹幕
@@ -76,6 +79,8 @@ def xml2ass(xml_name):
 
     # 处理弹幕
     for chat in chats:
+        if '#text' not in chat:
+            continue
         text = chat['#text']  # 文本
         user_id = chat['@user_id']  # id
         mail = chat['@mail'] if '@mail' in chat else ''  # mail,颜色，位置，大小，AA
@@ -336,14 +341,14 @@ def xml2ass(xml_name):
                 ex = 0-len(text)*(danmakuSize+danmakuFontSpace)
                 ey = danmakuLineHeight*(passageway_index)
                 # 生成弹幕行并加入总弹幕
-                if premium == '24' or premium == '25':
-                    eventD += 'Dialogue: 1,'+startTime+','+endTime + \
-                        ',Danmaku,,0,0,0,,{\\an7\\alpha80\\move('+str(sx)+','+str(
-                            sy)+','+str(ex)+','+str(ey)+')'+assColor+'}'+text+'\n'
-                else:
-                    eventD += 'Dialogue: 1,'+startTime+','+endTime + \
-                        ',Danmaku,,0,0,0,,{\\an7\\move('+str(sx)+','+str(
-                            sy)+','+str(ex)+','+str(ey)+')'+assColor+'}'+text+'\n'
+                # if premium == '24' or premium == '25':
+                #     eventD += 'Dialogue: 1,'+startTime+','+endTime + \
+                #         ',Danmaku,,0,0,0,,{\\an7\\alpha80\\move('+str(sx)+','+str(
+                #             sy)+','+str(ex)+','+str(ey)+')'+assColor+'}'+text+'\n'
+                # else:
+                eventD += 'Dialogue: 1,'+startTime+','+endTime + \
+                    ',Danmaku,,0,0,0,,{\\an7\\move('+str(sx)+','+str(
+                        sy)+','+str(ex)+','+str(ey)+')'+assColor+'}'+text+'\n'
 
     if include_aa:  # 处理AA弹幕
         import xml.dom.minidom
@@ -393,10 +398,10 @@ PlayResY: 720\n\
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, marginL, marginR, marginV, Encoding\n\
 Style: Default,微软雅黑,54,&H00FFFFFF,&H00FFFFFF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,1,2,0,2,0,0,0,0\n\
 Style: Alternate,微软雅黑,36,&H00FFFFFF,&H00FFFFFF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,1,2,0,2,0,0,0,0\n\
-Style: AA,黑体,'+str(AASize)+',&H00FFFFFF,&H00FFFFFF,&H00000000,&H00000000,-1,0,0,0,100,100,0,0,1,0,0,2,0,0,0,0\n\
+Style: AA,黑体,'+str(AASize)+',&H03FFFFFF,&H00FFFFFF,&H03000000,&H00000000,-1,0,0,0,100,100,0,0,1,0,0,2,0,0,0,0\n\
 Style: Office,'+fontName+','+str(OfficeSize)+',&H00FFFFFF,&H00FFFFFF,&H00000000,&H00000000,-1,0,0,0,100,100,2,0,1,1.5,0,2,0,0,10,0\n\
 Style: Anketo,'+fontName+','+str(fontSize)+',&H00FFFFFF,&H00FFFFFF,&H00000000,&H00000000,-1,0,0,0,100,100,2,0,1,1.5,0,2,0,0,10,0\n\
-Style: Danmaku,'+fontName+','+str(fontSize)+',&H00FFFFFF,&H00FFFFFF,&H00000000,&H00000000,-1,0,0,0,100,100,2,0,1,1.5,0,2,0,0,10,0\n\n\
+Style: Danmaku,'+fontName+','+str(fontSize)+',&H03FFFFFF,&H00FFFFFF,&HCC292421,&H00000000,-1,0,0,0,100,100,2,0,1,2,0,2,0,0,10,0\n\n\
 [Events]\n\
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text\n'
 
