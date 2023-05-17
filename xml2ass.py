@@ -33,14 +33,6 @@ def xml2ass(xml_name):
     officeId = []
     badItem = []
     for i in range(len(chats)):
-<<<<<<< HEAD
-        if '#text' not in chats[i]:
-            continue
-        text = chats[i]['#text']
-        user_id = chats[i]['@user_id']
-        premium = chats[i]['@premium'] if '@premium' in chats[i] else ''
-        if premium == '3' or premium == '7':
-=======
         try:
             text = chats[i]['#text']
         except KeyError:
@@ -53,7 +45,6 @@ def xml2ass(xml_name):
         if premium == '3' or premium == '7':
             officeId.append(user_id)
         elif user_id == "-1":
->>>>>>> upstream/main
             officeId.append(user_id)
         if i == len(chats) - 1 and len(officeId) == 0:
             officeId.append(input('找不到运营id，请手动输入：'))
@@ -67,12 +58,7 @@ def xml2ass(xml_name):
     OfficeSize = 40  # 运营弹幕字体大小
     OfficeWarpSize = 32  # 运营弹幕2行字体大小，不懂怎么画的，凑合
     OfficeBgHeight = 72  # 运营弹幕背景遮盖高度
-<<<<<<< HEAD
-    # fontName = 'Source Han Sans JP'
-    fontName = 'MS PGothic'
-=======
     fontName = 'SourceHanSansJP-Bold'
->>>>>>> upstream/main
     danmakuSize = 68
     danmakuLineHeight = 64  # 弹幕行高度
     danmakuFontSpace = 2  # 弹幕行间间隔
@@ -91,12 +77,8 @@ def xml2ass(xml_name):
                 'green2': '00cc66', 'marineblue': '33ffcc', 'blue2': '33ffcc', 'nobleviolet': '6633cc', 'purple2': '6633cc'}  # 颜色列表
     videoWidth = 1280  # 视频宽度，默认3M码率生放，不用改
     videoHeight = 720  # 视频高度，默认3M码率生放，不用改
-<<<<<<< HEAD
-    fontSize = 46  # 普通弹幕字体大小
-=======
     fontSize = 64  # 普通弹幕字体大小
     officialCheck = False
->>>>>>> upstream/main
 
     # 字幕行处理
     eventA = 'Comment: 0,0:00:00.00,0:00:00.00,AA,,0,0,0,,AA弹幕\n'  # AA弹幕
@@ -305,43 +287,40 @@ def xml2ass(xml_name):
                 vote_check = False
 
             if re.search('/vote', text) == None:  # 处理非投票运营弹幕
-<<<<<<< HEAD
-                centerHorizon = videoWidth/2
-                centerVertical = math.floor(OfficeBgHeight/2)
-                eventBg = 'Dialogue: 4,'+startTime+','+endTime+',Office,,0,0,0,,{\\an5\\p1\\pos('+str(
-                    centerHorizon)+','+str(centerVertical)+')\\bord0\\1c&H000000&\\1a&H78&}'+officeBg+'\n'
-                if premium == '7' and '@name' in chat:
-                    centerVertical = math.floor(OfficeBgHeight*3/4)
-                    name = '〘' + chat['@name'] + '〙'
-                    offset = math.floor((getTextWidth(text, fontName, OfficeWarpSize) - getTextWidth(name, fontName, OfficeWarpSize))/2)
-                    if offset < 0:
-                        nameHorizon = centerHorizon
-                        centerHorizon += offset
-                    else: 
-                        nameHorizon = centerHorizon - offset
-                if 'a href' in text:
-                    link = re.compile('<a href=(.*?)><u>')
-                    text = link.sub('', text).replace('</u></a>', '')
-                    eventDm = 'Dialogue: 5,'+startTime+','+endTime+',Office,,0,0,0,,{\\an5\\pos('+str(centerHorizon)+','+str(
-                        centerVertical)+')\\bord0\\1c&HFF8000&\\u1\\fsp0}'+text.replace('/perm ', '')+'\n'
-                else:
-                    eventDm = 'Dialogue: 5,'+startTime+','+endTime+',Office,,0,0,0,,{\\an5\\pos('+str(centerHorizon)+','+str(
-                        centerVertical)+')\\bord0'+assColor+'\\fsp0}'+text.replace('/perm ', '')+'\n'
-                if premium == '7' and '@name' in chat:
-                    centerVertical = math.floor(OfficeBgHeight*1/4)
+                # centerHorizon = videoWidth/2
+                # centerVertical = math.floor(OfficeBgHeight/2)
+                # eventBg = 'Dialogue: 4,'+startTime+','+endTime+',Office,,0,0,0,,{\\an5\\p1\\pos('+str(
+                #     centerHorizon)+','+str(centerVertical)+')\\bord0\\1c&H000000&\\1a&H78&}'+officeBg+'\n'
+                # if premium == '7' and '@name' in chat:
+                #     centerVertical = math.floor(OfficeBgHeight*3/4)
+                #     name = '〘' + chat['@name'] + '〙'
+                #     offset = math.floor((getTextWidth(text, fontName, OfficeWarpSize) - getTextWidth(name, fontName, OfficeWarpSize))/2)
+                #     if offset < 0:
+                #         nameHorizon = centerHorizon
+                #         centerHorizon += offset
+                #     else: 
+                #         nameHorizon = centerHorizon - offset
+                # if 'a href' in text:
+                #     link = re.compile('<a href=(.*?)><u>')
+                #     text = link.sub('', text).replace('</u></a>', '')
+                #     eventDm = 'Dialogue: 5,'+startTime+','+endTime+',Office,,0,0,0,,{\\an5\\pos('+str(centerHorizon)+','+str(
+                #         centerVertical)+')\\bord0\\1c&HFF8000&\\u1\\fsp0}'+text.replace('/perm ', '')+'\n'
+                # else:
+                #     eventDm = 'Dialogue: 5,'+startTime+','+endTime+',Office,,0,0,0,,{\\an5\\pos('+str(centerHorizon)+','+str(
+                #         centerVertical)+')\\bord0'+assColor+'\\fsp0}'+text.replace('/perm ', '')+'\n'
+                # if premium == '7' and '@name' in chat:
+                #     centerVertical = math.floor(OfficeBgHeight*1/4)
                 
-                    eventDm = 'Dialogue: 5,'+startTime+','+endTime+',Office,,0,0,0,,{\\an5\\pos('+str(nameHorizon)+','+str(
-                        centerVertical)+')\\bord0'+assColor+'\\fsp0}'+name+'\n' + eventDm
-                if len(text) > 50:
-                    eventDm = eventDm.replace('fsp0', 'fsp0\\fs30')
-                eventO += eventBg+eventDm.replace('　', '  ')
-=======
+                #     eventDm = 'Dialogue: 5,'+startTime+','+endTime+',Office,,0,0,0,,{\\an5\\pos('+str(nameHorizon)+','+str(
+                #         centerVertical)+')\\bord0'+assColor+'\\fsp0}'+name+'\n' + eventDm
+                # if len(text) > 50:
+                #     eventDm = eventDm.replace('fsp0', 'fsp0\\fs30')
+                # eventO += eventBg+eventDm.replace('　', '  ')
                 startTimeW = startTime
                 endTimeW = endTime
                 textW = text
                 vposW = vpos
                 officialCheck = True
->>>>>>> upstream/main
 
         else:  # 处理用户弹幕
             pos = 0
@@ -396,25 +375,14 @@ def xml2ass(xml_name):
                 ex = 0-len(text)*(danmakuSize+danmakuFontSpace)
                 ey = danmakuLineHeight*(passageway_index)
                 # 生成弹幕行并加入总弹幕
-<<<<<<< HEAD
-                # if premium == '24' or premium == '25':
-                #     eventD += 'Dialogue: 1,'+startTime+','+endTime + \
-                #         ',Danmaku,,0,0,0,,{\\an7\\alpha80\\move('+str(sx)+','+str(
-                #             sy)+','+str(ex)+','+str(ey)+')'+assColor+'}'+text+'\n'
-                # else:
-                eventD += 'Dialogue: 1,'+startTime+','+endTime + \
-                    ',Danmaku,,0,0,0,,{\\an7\\move('+str(sx)+','+str(
-                        sy)+','+str(ex)+','+str(ey)+')'+assColor+'}'+text+'\n'
-=======
                 if premium == '24' or premium == '25':
-                    eventD += 'Dialogue: 2,'+startTime+','+endTime + \
+                    eventD += 'Dialogue: 1,'+startTime+','+endTime + \
                         ',Danmaku,,0,0,0,,{\\an7\\alpha80\\move('+str(sx)+','+str(
                             sy)+','+str(ex)+','+str(ey)+')'+assColor+'}'+text+'\n'
                 else:
-                    eventD += 'Dialogue: 2,'+startTime+','+endTime + \
+                    eventD += 'Dialogue: 1,'+startTime+','+endTime + \
                         ',Danmaku,,0,0,0,,{\\an7\\move('+str(sx)+','+str(
                             sy)+','+str(ex)+','+str(ey)+')'+assColor+'}'+text+'\n'
->>>>>>> upstream/main
 
     if include_aa:  # 处理AA弹幕
         import xml.dom.minidom
@@ -464,10 +432,10 @@ PlayResY: 720\n\
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, marginL, marginR, marginV, Encoding\n\
 Style: Default,微软雅黑,54,&H00FFFFFF,&H00FFFFFF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,1,2,0,2,0,0,0,0\n\
 Style: Alternate,微软雅黑,36,&H00FFFFFF,&H00FFFFFF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,1,2,0,2,0,0,0,0\n\
-Style: AA,黑体,'+str(AASize)+',&HB3FFFFFF,&H00FFFFFF,&HB3000000,&H00000000,-1,0,0,0,100,100,0,0,1,0,0,2,0,0,0,0\n\
+Style: AA,黑体,'+str(AASize)+',&H00FFFFFF,&H00FFFFFF,&H00000000,&H00000000,-1,0,0,0,100,100,0,0,1,0,0,2,0,0,0,0\n\
 Style: Office,'+fontName+','+str(OfficeSize)+',&H00FFFFFF,&H00FFFFFF,&H00000000,&H00000000,-1,0,0,0,100,100,2,0,1,1.5,0,2,0,0,10,0\n\
 Style: Anketo,'+fontName+','+str(fontSize)+',&H00FFFFFF,&H00FFFFFF,&H00000000,&H00000000,-1,0,0,0,100,100,2,0,1,1.5,0,2,0,0,10,0\n\
-Style: Danmaku,'+fontName+','+str(fontSize)+',&HB3FFFFFF,&H00FFFFFF,&HCC292421,&H00000000,-1,0,0,0,100,100,2,0,1,2,0,2,0,0,10,0\n\n\
+Style: Danmaku,'+fontName+','+str(fontSize)+',&H00FFFFFF,&H00FFFFFF,&H00000000,&H00000000,-1,0,0,0,100,100,2,0,1,1.5,0,2,0,0,10,0\n\n\
 [Events]\n\
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text\n'
 
