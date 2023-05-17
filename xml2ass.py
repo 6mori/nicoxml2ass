@@ -31,16 +31,35 @@ def xml2ass(xml_name):
 
     # 获取运营弹幕ID和需要过滤弹幕的ID
     officeId = []
+    badItem = []
     for i in range(len(chats)):
+<<<<<<< HEAD
         if '#text' not in chats[i]:
             continue
         text = chats[i]['#text']
         user_id = chats[i]['@user_id']
         premium = chats[i]['@premium'] if '@premium' in chats[i] else ''
         if premium == '3' or premium == '7':
+=======
+        try:
+            text = chats[i]['#text']
+        except KeyError:
+            badItem.append(i)
+            continue
+        except:
+            print(i)
+        user_id = chats[i]['@user_id']
+        premium = chats[i]['@premium'] if '@premium' in chats[i] else ''
+        if premium == '3' or premium == '7':
+            officeId.append(user_id)
+        elif user_id == "-1":
+>>>>>>> upstream/main
             officeId.append(user_id)
         if i == len(chats) - 1 and len(officeId) == 0:
             officeId.append(input('找不到运营id，请手动输入：'))
+
+    for i in badItem[:: -1]:
+        chats.pop(i)
 
     # 弹幕参数
     AASize = 18  # AA弹幕字体大小
@@ -48,8 +67,12 @@ def xml2ass(xml_name):
     OfficeSize = 40  # 运营弹幕字体大小
     OfficeWarpSize = 32  # 运营弹幕2行字体大小，不懂怎么画的，凑合
     OfficeBgHeight = 72  # 运营弹幕背景遮盖高度
+<<<<<<< HEAD
     # fontName = 'Source Han Sans JP'
     fontName = 'MS PGothic'
+=======
+    fontName = 'SourceHanSansJP-Bold'
+>>>>>>> upstream/main
     danmakuSize = 68
     danmakuLineHeight = 64  # 弹幕行高度
     danmakuFontSpace = 2  # 弹幕行间间隔
@@ -68,7 +91,12 @@ def xml2ass(xml_name):
                 'green2': '00cc66', 'marineblue': '33ffcc', 'blue2': '33ffcc', 'nobleviolet': '6633cc', 'purple2': '6633cc'}  # 颜色列表
     videoWidth = 1280  # 视频宽度，默认3M码率生放，不用改
     videoHeight = 720  # 视频高度，默认3M码率生放，不用改
+<<<<<<< HEAD
     fontSize = 46  # 普通弹幕字体大小
+=======
+    fontSize = 64  # 普通弹幕字体大小
+    officialCheck = False
+>>>>>>> upstream/main
 
     # 字幕行处理
     eventA = 'Comment: 0,0:00:00.00,0:00:00.00,AA,,0,0,0,,AA弹幕\n'  # AA弹幕
@@ -85,18 +113,37 @@ def xml2ass(xml_name):
         user_id = chat['@user_id']  # id
         mail = chat['@mail'] if '@mail' in chat else ''  # mail,颜色，位置，大小，AA
         premium = chat['@premium'] if '@premium' in chat else ''
-        # 过滤弹幕
-        if '※ NGコメント' in text or '/clear' in text or '/trialpanel' in text or '/spi' in text or '/disconnect' in text or '/gift' in text or '/commentlock' in text or '/nicoad' in text or '/info' in text or '/jump' in text or '/play' in text:
-            continue
-        elif premium == '2':
-            continue
-        elif chat['@vpos'] == '':
-            continue
         vpos = int(chat['@vpos'])  # 读取时间
         startTime = sec2hms(round(vpos/100, 2))  # 转换开始时间
         endTime = sec2hms(round(vpos/100, 2)+timeDanmaku)  # 转换结束时间
         color = 'ffffff'
         color_important = 0
+        # 过滤弹幕
+        if '※ NGコメント' in text or '/clear' in text or '/trialpanel' in text or '/spi' in text or '/disconnect' in text or '/gift' in text or '/commentlock' in text or '/nicoad' in text or '/info' in text or '/jump' in text or '/play' in text or '/redirect' in text:
+            continue
+        elif premium == '2':
+            continue
+        elif chat['@vpos'] == '':
+            continue
+        if officialCheck:  # 释放之前捕捉的运营弹幕
+            if vpos-vposW > 800 or user_id in officeId:
+                if user_id in officeId:
+                    endTimeW = startTime
+                eventBg = 'Dialogue: 4,'+startTimeW+','+endTimeW+',Office,,0,0,0,,{\\an5\\p1\\pos('+str(
+                    videoWidth/2)+','+str(math.floor(OfficeBgHeight/2))+')\\bord0\\1c&H000000&\\1a&H78&}'+officeBg+'\n'
+                if 'href' in textW:
+                    link = re.compile('<a href=(.*?)><u>')
+                    textW = link.sub('', textW).replace('</u></a>', '')
+                    eventDm = 'Dialogue: 5,'+startTimeW+','+endTimeW+',Office,,0,0,0,,{\\an5\\pos('+str(videoWidth/2)+','+str(
+                        math.floor(OfficeBgHeight/2))+')\\bord0\\1c&HFF8000&\\u1\\fsp0}'+textW.replace('/perm ', '')+'\n'
+                else:
+                    eventDm = 'Dialogue: 5,'+startTimeW+','+endTimeW+',Office,,0,0,0,,{\\an5\\pos('+str(videoWidth/2)+','+str(
+                        math.floor(OfficeBgHeight/2))+')\\bord0'+assColor+'\\fsp0}'+textW.replace('/perm ', '')+'\n'
+                if len(text) > 50:
+                    eventDm = eventDm.replace('fsp0', 'fsp0\\fs30')
+                eventO += eventBg+eventDm.replace('　', '  ')
+                officialCheck = False
+
         for style in mail.split(' '):  # 颜色调整
             if re.match(r'#([0-9A-Fa-f]{6})', style):
                 m = re.match(r'#([0-9A-Fa-f]{6})', style)
@@ -258,6 +305,7 @@ def xml2ass(xml_name):
                 vote_check = False
 
             if re.search('/vote', text) == None:  # 处理非投票运营弹幕
+<<<<<<< HEAD
                 centerHorizon = videoWidth/2
                 centerVertical = math.floor(OfficeBgHeight/2)
                 eventBg = 'Dialogue: 4,'+startTime+','+endTime+',Office,,0,0,0,,{\\an5\\p1\\pos('+str(
@@ -287,6 +335,13 @@ def xml2ass(xml_name):
                 if len(text) > 50:
                     eventDm = eventDm.replace('fsp0', 'fsp0\\fs30')
                 eventO += eventBg+eventDm.replace('　', '  ')
+=======
+                startTimeW = startTime
+                endTimeW = endTime
+                textW = text
+                vposW = vpos
+                officialCheck = True
+>>>>>>> upstream/main
 
         else:  # 处理用户弹幕
             pos = 0
@@ -308,10 +363,10 @@ def xml2ass(xml_name):
             if is_aa:  # AA弹幕跳过，在后一部分处理
                 continue
             elif pos == 2:  # 底部弹幕
-                eventD += 'Dialogue: 1,'+startTime+','+endTime + \
+                eventD += 'Dialogue: 2,'+startTime+','+endTime + \
                     ',Danmaku,,0,0,0,,{\\an2'+assColor+'}'+text+'\n'
             elif pos == 8:  # 顶部弹幕
-                eventD += 'Dialogue: 1,'+startTime+','+endTime + \
+                eventD += 'Dialogue: 2,'+startTime+','+endTime + \
                     ',Danmaku,,0,0,0,,{\\an8'+assColor+'}'+text+'\n'
             elif pos == 0:  # 普通滚动弹幕
                 if vpos > vpos_now:
@@ -341,6 +396,7 @@ def xml2ass(xml_name):
                 ex = 0-len(text)*(danmakuSize+danmakuFontSpace)
                 ey = danmakuLineHeight*(passageway_index)
                 # 生成弹幕行并加入总弹幕
+<<<<<<< HEAD
                 # if premium == '24' or premium == '25':
                 #     eventD += 'Dialogue: 1,'+startTime+','+endTime + \
                 #         ',Danmaku,,0,0,0,,{\\an7\\alpha80\\move('+str(sx)+','+str(
@@ -349,6 +405,16 @@ def xml2ass(xml_name):
                 eventD += 'Dialogue: 1,'+startTime+','+endTime + \
                     ',Danmaku,,0,0,0,,{\\an7\\move('+str(sx)+','+str(
                         sy)+','+str(ex)+','+str(ey)+')'+assColor+'}'+text+'\n'
+=======
+                if premium == '24' or premium == '25':
+                    eventD += 'Dialogue: 2,'+startTime+','+endTime + \
+                        ',Danmaku,,0,0,0,,{\\an7\\alpha80\\move('+str(sx)+','+str(
+                            sy)+','+str(ex)+','+str(ey)+')'+assColor+'}'+text+'\n'
+                else:
+                    eventD += 'Dialogue: 2,'+startTime+','+endTime + \
+                        ',Danmaku,,0,0,0,,{\\an7\\move('+str(sx)+','+str(
+                            sy)+','+str(ex)+','+str(ey)+')'+assColor+'}'+text+'\n'
+>>>>>>> upstream/main
 
     if include_aa:  # 处理AA弹幕
         import xml.dom.minidom
@@ -383,7 +449,7 @@ def xml2ass(xml_name):
                 # 分成多行生成弹幕并整合成完整AA弹幕
                 textAA = text.split('\n')
                 for a in range(len(textAA)):
-                    eventA += 'Dialogue: 4,'+startTime+','+endTime+',AA,,0,0,0,,{\\an4\\fsp-1\\move('+str(videoWidth)+', '+str(
+                    eventA += 'Dialogue: 1,'+startTime+','+endTime+',AA,,0,0,0,,{\\an4\\fsp-1\\move('+str(videoWidth)+', '+str(
                         (AASize-1)*a+AAHighAdjust)+','+str(-fontSize*10)+',' + str((AASize-1)*a+AAHighAdjust)+')'+assColor+'}'+textAA[a]+'\n'
 
     # 定义ass文件头
@@ -408,9 +474,9 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text\
     # 写入ass
     with open(os.path.splitext(xml_name)[0]+'.ass', 'w', encoding='utf-8-sig') as f:
         f.write(header)
-        f.write(eventA)
         f.write(eventO)
         f.write(eventD)
+        f.write(eventA)
 
 
 if __name__ == "__main__":
