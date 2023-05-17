@@ -320,7 +320,23 @@ def xml2ass(xml_name):
                 endTimeW = endTime
                 textW = text
                 vposW = vpos
-                officialCheck = True
+                name = ''
+                if premium == '7' and '@name' in chat:
+                    name = '〘' + chat['@name'] + '〙'
+                eventBg = 'Dialogue: 4,'+startTimeW+','+endTimeW+',Office,,0,0,0,,{\\an5\\p1\\pos('+str(
+                    videoWidth/2)+','+str(math.floor(OfficeBgHeight/2))+')\\bord0\\1c&H000000&\\1a&H78&}'+officeBg+'\n'
+                if 'href' in textW:
+                    link = re.compile('<a href=(.*?)><u>')
+                    textW = link.sub('', textW).replace('</u></a>', '')
+                    eventDm = 'Dialogue: 5,'+startTimeW+','+endTimeW+',Office,,0,0,0,,{\\an5\\pos('+str(videoWidth/2)+','+str(
+                        math.floor(OfficeBgHeight/2))+')\\bord0\\1c&HFF8000&\\u1\\fsp0}'+name+textW.replace('/perm ', '')+'\n'
+                else:
+                    eventDm = 'Dialogue: 5,'+startTimeW+','+endTimeW+',Office,,0,0,0,,{\\an5\\pos('+str(videoWidth/2)+','+str(
+                        math.floor(OfficeBgHeight/2))+')\\bord0'+assColor+'\\fsp0}'+name+textW.replace('/perm ', '')+'\n'
+                if len(text) > 50:
+                    eventDm = eventDm.replace('fsp0', 'fsp0\\fs30')
+                eventO += eventBg+eventDm.replace('　', '  ')
+                # officialCheck = True
 
         else:  # 处理用户弹幕
             pos = 0
