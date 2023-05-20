@@ -58,7 +58,8 @@ def xml2ass(xml_name):
     OfficeSize = 40  # 运营弹幕字体大小
     OfficeWarpSize = 32  # 运营弹幕2行字体大小，不懂怎么画的，凑合
     OfficeBgHeight = 72  # 运营弹幕背景遮盖高度
-    fontName = 'SourceHanSansJP-Bold'
+    # fontName = 'SourceHanSansJP-Bold'
+    fontName = 'MS PGothic'
     danmakuSize = 68
     danmakuLineHeight = 64  # 弹幕行高度
     danmakuFontSpace = 2  # 弹幕行间间隔
@@ -77,7 +78,7 @@ def xml2ass(xml_name):
                 'green2': '00cc66', 'marineblue': '33ffcc', 'blue2': '33ffcc', 'nobleviolet': '6633cc', 'purple2': '6633cc'}  # 颜色列表
     videoWidth = 1280  # 视频宽度，默认3M码率生放，不用改
     videoHeight = 720  # 视频高度，默认3M码率生放，不用改
-    fontSize = 64  # 普通弹幕字体大小
+    fontSize = 46  # 普通弹幕字体大小
     officialCheck = False
 
     # 字幕行处理
@@ -448,10 +449,10 @@ PlayResY: 720\n\
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, marginL, marginR, marginV, Encoding\n\
 Style: Default,微软雅黑,54,&H00FFFFFF,&H00FFFFFF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,1,2,0,2,0,0,0,0\n\
 Style: Alternate,微软雅黑,36,&H00FFFFFF,&H00FFFFFF,&H00000000,&H00000000,0,0,0,0,100,100,0,0,1,2,0,2,0,0,0,0\n\
-Style: AA,黑体,'+str(AASize)+',&H00FFFFFF,&H00FFFFFF,&H00000000,&H00000000,-1,0,0,0,100,100,0,0,1,0,0,2,0,0,0,0\n\
+Style: AA,黑体,'+str(AASize)+',&HB3FFFFFF,&H00FFFFFF,&HB3000000,&H00000000,-1,0,0,0,100,100,0,0,1,0,0,2,0,0,0,0\n\
 Style: Office,'+fontName+','+str(OfficeSize)+',&H00FFFFFF,&H00FFFFFF,&H00000000,&H00000000,-1,0,0,0,100,100,2,0,1,1.5,0,2,0,0,10,0\n\
 Style: Anketo,'+fontName+','+str(fontSize)+',&H00FFFFFF,&H00FFFFFF,&H00000000,&H00000000,-1,0,0,0,100,100,2,0,1,1.5,0,2,0,0,10,0\n\
-Style: Danmaku,'+fontName+','+str(fontSize)+',&H00FFFFFF,&H00FFFFFF,&H00000000,&H00000000,-1,0,0,0,100,100,2,0,1,1.5,0,2,0,0,10,0\n\n\
+Style: Danmaku,'+fontName+','+str(fontSize)+',&HB3FFFFFF,&H00FFFFFF,&HCC292421,&H00000000,-1,0,0,0,100,100,2,0,1,2,0,2,0,0,10,0\n\n\
 [Events]\n\
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text\n'
 
